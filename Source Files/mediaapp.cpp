@@ -27,6 +27,7 @@ MediaApp::MediaApp(QWidget *parent)
     resize(640, 480);
 }
 
+// 초기화면 CUSTOM
 void MediaApp::createCustomTitleBar(QBoxLayout *appLayout)
 {
     // 타이틀 바 위젯 생성
@@ -141,26 +142,6 @@ void MediaApp::createCustomTitleBar(QBoxLayout *appLayout)
     appLayout->addWidget(titleBar);
 }
 
-void MediaApp::mousePressEvent(QMouseEvent *event)
-{
-    if (event->button() == Qt::LeftButton) {
-        m_dragPosition = event->globalPosition().toPoint() - frameGeometry().topLeft();
-        m_dragging = true;
-    }
-}
-
-void MediaApp::mouseMoveEvent(QMouseEvent *event)
-{
-    if (m_dragging) {
-        move(event->globalPosition().toPoint() - m_dragPosition);
-    }
-}
-
-void MediaApp::mouseReleaseEvent(QMouseEvent *event)
-{
-    m_dragging = false;
-}
-
 // UI
 void MediaApp::createUI(QBoxLayout *appLayout)
 {
@@ -261,7 +242,7 @@ void MediaApp::createUI(QBoxLayout *appLayout)
  *
  */
 
-// MDI Area 표시
+// 4채널 MDI Area 표시
 void MediaApp::showStreamingArea()
 {
     mdiArea = new QMdiArea;
@@ -474,6 +455,7 @@ void MediaApp::addStreamWindow()
     fetchCameraIPsForChannel(channelIndex, targetWindow);
 }
 
+// 서버로부터 카메라 IP 받아오기
 void MediaApp::fetchCameraIPsForChannel(int channelIndex, QMdiSubWindow *targetWindow)
 {
     QString serverUrl = "https://b9d1644e-063c-44a9-9607-fc86dc9a3842.mock.pstmn.io/get_camera_ips"; // 서버 URL
@@ -543,10 +525,25 @@ void MediaApp::fetchCameraIPsForChannel(int channelIndex, QMdiSubWindow *targetW
                 radioButtons.append(radioButton);
             }
 
-            QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dialog);
-            layout->addWidget(buttonBox);
-
-            connect(buttonBox, &QDialogButtonBox::accepted, [&]() {
+            // 확인 버튼
+            QPushButton *okButton = new QPushButton("OK", &dialog);
+            okButton->setStyleSheet(R"(
+                QPushButton {
+                    background-color: #455364;
+                    color: #ffffff;
+                    border: none;
+                    border-radius: 5px;
+                    padding: 10px 20px;
+                    font-size: 14px;
+                }
+                QPushButton:hover {
+                    background-color: #54687A;
+                }
+                QPushButton:pressed {
+                    background-color: #60798B;
+                }
+            )");
+            connect(okButton, &QPushButton::clicked, [&]() {
                 QString selectedIp;
                 for (QRadioButton *radioButton : radioButtons) {
                     if (radioButton->isChecked()) {
@@ -564,8 +561,33 @@ void MediaApp::fetchCameraIPsForChannel(int channelIndex, QMdiSubWindow *targetW
                 dialog.accept();
             });
 
-            connect(buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+            // 취소 버튼
+            QPushButton *cancelButton = new QPushButton("Cancel", &dialog);
+            cancelButton->setStyleSheet(R"(
+                QPushButton {
+                    background-color: #455364;
+                    color: #ffffff;
+                    border: none;
+                    border-radius: 5px;
+                    padding: 10px 20px;
+                    font-size: 14px;
+                }
+                QPushButton:hover {
+                    background-color: #54687A;
+                }
+                QPushButton:pressed {
+                    background-color: #60798B;
+                }
+            )");
+            connect(cancelButton, &QPushButton::clicked, &dialog, &QDialog::reject);
 
+            // 버튼 레이아웃
+            QHBoxLayout *buttonLayout = new QHBoxLayout;
+            buttonLayout->addWidget(okButton);
+            buttonLayout->addWidget(cancelButton);
+
+            // 다이얼로그 레이아웃 구성
+            layout->addLayout(buttonLayout);
             dialog.setLayout(layout);
             dialog.exec();
         } else {
@@ -575,6 +597,7 @@ void MediaApp::fetchCameraIPsForChannel(int channelIndex, QMdiSubWindow *targetW
     });
 }
 
+// 실시간 RTSP 스트리밍
 void MediaApp::startStream(int channelIndex, const QString &cameraIp, QMdiSubWindow *targetWindow)
 {
     if (cameraIp.isEmpty()) {
@@ -602,6 +625,8 @@ void MediaApp::startStream(int channelIndex, const QString &cameraIp, QMdiSubWin
     targetWindow->resize(640, 480);
     targetWindow->show();
 }
+/* ************************************************************************************************************ */
+/* ************************************************************************************************************ */
 
 /*
  * [ Saved Video 버튼 클릭 시 동작 ]
@@ -611,6 +636,7 @@ void MediaApp::startStream(int channelIndex, const QString &cameraIp, QMdiSubWin
  *
  */
 
+// 4채널 MDI Area 표시
 void MediaApp::showVideoArea()
 {
     mdiArea = new QMdiArea;
@@ -796,6 +822,7 @@ void MediaApp::showVideoArea()
     mdiDialog->exec();
 }
 
+// 동영상 재생 창 추가
 void MediaApp::addVideoWindow()
 {
     //미리 생성된 서브윈도우 리스트 가져오기
@@ -928,12 +955,51 @@ void MediaApp::fetchVideoList(int channelIndex, QMdiSubWindow *targetWindow)
             downloadCheckBox->setStyleSheet(checkboxStyle);
             layout->addWidget(downloadCheckBox);
 
-            // OK 및 Cancel 버튼
-            QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dialog);
-            layout->addWidget(buttonBox);
+            // OK 버튼
+            QPushButton *okButton = new QPushButton("OK", &dialog);
+            okButton->setStyleSheet(R"(
+                QPushButton {
+                    background-color: #455364;
+                    color: #ffffff;
+                    border: none;
+                    border-radius: 5px;
+                    padding: 10px 20px;
+                    font-size: 14px;
+                }
+                QPushButton:hover {
+                    background-color: #54687A;
+                }
+                QPushButton:pressed {
+                    background-color: #60798B;
+                }
+            )");
 
-            connect(buttonBox, &QDialogButtonBox::accepted, &dialog, [this, channelIndex, targetWindow, downloadCheckBox, radioButtons, &dialog]() {
-                // 선택된 동영상 확인
+            // Cancel 버튼
+            QPushButton *cancelButton = new QPushButton("Cancel", &dialog);
+            cancelButton->setStyleSheet(R"(
+                QPushButton {
+                    background-color: #455364;
+                    color: #ffffff;
+                    border: none;
+                    border-radius: 5px;
+                    padding: 10px 20px;
+                    font-size: 14px;
+                }
+                QPushButton:hover {
+                    background-color: #54687A;
+                }
+                QPushButton:pressed {
+                    background-color: #60798B;
+                }
+            )");
+
+            // 버튼 레이아웃
+            QHBoxLayout *buttonLayout = new QHBoxLayout;
+            buttonLayout->addWidget(okButton);
+            buttonLayout->addWidget(cancelButton);
+
+            // OK 버튼 클릭 이벤트
+            connect(okButton, &QPushButton::clicked, [&]() {
                 QString selectedUrl;
                 for (int i = 0; i < radioButtons.size(); ++i) {
                     if (radioButtons[i]->isChecked()) {
@@ -965,8 +1031,10 @@ void MediaApp::fetchVideoList(int channelIndex, QMdiSubWindow *targetWindow)
                 dialog.accept();
             });
 
-            connect(buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+            // Cancel 버튼 클릭 이벤트
+            connect(cancelButton, &QPushButton::clicked, &dialog, &QDialog::reject);
 
+            layout->addLayout(buttonLayout);
             dialog.setLayout(layout);
             dialog.exec();
         } else {
@@ -1050,6 +1118,8 @@ void MediaApp::downloadVideo(const QString &url, const QString &savePath)
         reply->deleteLater();
     });
 }
+/* ************************************************************************************************************ */
+/* ************************************************************************************************************ */
 
 /*
  * [ CameraInfo 버튼 클릭 시 동작 ]
@@ -1059,6 +1129,7 @@ void MediaApp::downloadVideo(const QString &url, const QString &savePath)
  *
  */
 
+// 서버로부터 카메라 정보 받아오기
 void MediaApp::fetchCameraInfo()
 {
     QString serverUrl = "https://b9d1644e-063c-44a9-9607-fc86dc9a3842.mock.pstmn.io/get_camera_list";
@@ -1089,6 +1160,7 @@ void MediaApp::fetchCameraInfo()
     });
 }
 
+// 받아온 정보 표시
 void MediaApp::displayCameraInfo(const QJsonArray &cameraList)
 {
     QDialog dialog(this, Qt::FramelessWindowHint | Qt::Dialog);
@@ -1248,6 +1320,7 @@ void MediaApp::displayCameraInfo(const QJsonArray &cameraList)
     dialog.exec();
 }
 
+// 수정한 정보 서버로 PATCH 요청
 void MediaApp::patchCameraInfo(const QJsonArray &updatedCameras)
 {
     QString serverUrl = "https://b9d1644e-063c-44a9-9607-fc86dc9a3842.mock.pstmn.io/get_camera_list";
@@ -1275,6 +1348,8 @@ void MediaApp::patchCameraInfo(const QJsonArray &updatedCameras)
         reply->deleteLater();
     });
 }
+/* ************************************************************************************************************ */
+/* ************************************************************************************************************ */
 
 /*
  * [ Upload Program 버튼 클릭 시 동작 ]
@@ -1283,6 +1358,8 @@ void MediaApp::patchCameraInfo(const QJsonArray &updatedCameras)
  * 2. 입력한 정보를 바탕으로 서버로 POST 수행
  *
  */
+
+// 파일 정보 입력
 void MediaApp::uploadCameraProgram()
 {
     // Input dialog for user to provide FPS, name, and description
@@ -1325,10 +1402,25 @@ void MediaApp::uploadCameraProgram()
     line3->setFrameShadow(QFrame::Sunken);
     line3->setStyleSheet("color: #ffffff;");
 
-    // 확인 및 취소 버튼
-    QDialogButtonBox *buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dialog);
-
-    connect(buttonBox, &QDialogButtonBox::accepted, &dialog, [&]() {
+    // 확인 버튼
+    QPushButton *okButton = new QPushButton("OK", &dialog);
+    okButton->setStyleSheet(R"(
+        QPushButton {
+            background-color: #455364;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+        QPushButton:hover {
+            background-color: #54687A;
+        }
+        QPushButton:pressed {
+            background-color: #60798B;
+        }
+    )");
+    connect(okButton, &QPushButton::clicked, &dialog, [&]() {
         if (fpsInput->text().isEmpty() || nameInput->text().isEmpty() || descInput->text().isEmpty()) {
             showCustomMessage("Error", "All fields are required.");
             return;
@@ -1338,7 +1430,25 @@ void MediaApp::uploadCameraProgram()
         sendProgramToServer(fpsInput->text(), nameInput->text(), descInput->text());
     });
 
-    connect(buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
+    // 취소 버튼
+    QPushButton *cancelButton = new QPushButton("Cancel", &dialog);
+    cancelButton->setStyleSheet(R"(
+        QPushButton {
+            background-color: #455364;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+        QPushButton:hover {
+            background-color: #54687A;
+        }
+        QPushButton:pressed {
+            background-color: #60798B;
+        }
+    )");
+    connect(cancelButton, &QPushButton::clicked, &dialog, &QDialog::reject);
 
     // 레이아웃 구성
     layout->addWidget(fpsLabel);
@@ -1353,12 +1463,17 @@ void MediaApp::uploadCameraProgram()
     layout->addWidget(descInput);
     layout->addWidget(line3);
 
-    layout->addWidget(buttonBox);
+    QHBoxLayout *buttonLayout = new QHBoxLayout;
+    buttonLayout->addWidget(okButton);
+    buttonLayout->addWidget(cancelButton);
+
+    layout->addLayout(buttonLayout);
 
     dialog.setLayout(layout);
     dialog.exec();
 }
 
+// 서버로 POST 요청
 void MediaApp::sendProgramToServer(const QString &fps, const QString &name, const QString &description)
 {
     QString serverUrl = "https://b9d1644e-063c-44a9-9607-fc86dc9a3842.mock.pstmn.io/post_program";
@@ -1401,9 +1516,34 @@ void MediaApp::sendProgramToServer(const QString &fps, const QString &name, cons
         reply->deleteLater();
     });
 }
+/* ************************************************************************************************************ */
+/* ************************************************************************************************************ */
 
 /*
- * 창 크기 및 소멸 조절
+ * 마우스 동작 처리
+ */
+void MediaApp::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        m_dragPosition = event->globalPosition().toPoint() - frameGeometry().topLeft();
+        m_dragging = true;
+    }
+}
+
+void MediaApp::mouseMoveEvent(QMouseEvent *event)
+{
+    if (m_dragging) {
+        move(event->globalPosition().toPoint() - m_dragPosition);
+    }
+}
+
+void MediaApp::mouseReleaseEvent(QMouseEvent *event)
+{
+    m_dragging = false;
+}
+
+/*
+ * 창 크기 조절 및 채널 닫기
  */
 void MediaApp::maximizeChannel(int channelNumber)
 {
@@ -1448,7 +1588,6 @@ void MediaApp::returnSize(int channelNumber)
         return;
     }
 
-
     mdiArea->setActiveSubWindow(targetWindow);
     targetWindow->showNormal();
     targetWindow->resize(640, 480);
@@ -1491,7 +1630,7 @@ void MediaApp::closeChannel(int channelNumber)
     targetWindow->showNormal();
 }
 
-// 오류 메세지 출력용
+// 오류 메세지 출력 다이얼로그
 void MediaApp::showCustomMessage(const QString &title, const QString &message)
 {
     QDialog customDialog(this, Qt::FramelessWindowHint | Qt::Dialog);
