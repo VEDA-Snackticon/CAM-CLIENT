@@ -38,6 +38,7 @@
 #include "player.h"
 #include "customwidget.h"
 #include "subwindow.h"
+#include "DraggableDialog.h"
 
 class MediaApp : public QWidget
 {
