@@ -73,7 +73,7 @@ void MediaApp::createCustomTitleBar(QBoxLayout *appLayout)
 
         QVBoxLayout *layout = new QVBoxLayout(&customDialog);
 
-        QLabel *messageLabel = new QLabel("Do you want to close this application?", &customDialog);
+        QLabel *messageLabel = new QLabel("Do you want to close the ""SNACK GUARD""?", &customDialog);
         messageLabel->setStyleSheet("font-size: 16px; font-weight: bold; color: white;");
         messageLabel->setAlignment(Qt::AlignCenter);
         layout->addWidget(messageLabel);
@@ -248,7 +248,7 @@ void MediaApp::showStreamingArea()
     mdiArea = new QMdiArea;
     mdiArea->setViewMode(QMdiArea::SubWindowView);
 
-    QDialog *mdiDialog = new QDialog(this);
+    DraggableDialog *mdiDialog = new DraggableDialog(this);
     mdiDialog->setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
     mdiDialog->resize(1302, 1018);
 
@@ -311,7 +311,7 @@ void MediaApp::showStreamingArea()
         QVBoxLayout *layout = new QVBoxLayout(&customDialog);
 
         // 메시지 라벨 추가
-        QLabel *messageLabel = new QLabel("Do you want to close this window?", &customDialog);
+        QLabel *messageLabel = new QLabel("Do you want to close this STREAMING channel?", &customDialog);
         messageLabel->setStyleSheet("font-size: 16px; font-weight: bold; color: white;");
         messageLabel->setAlignment(Qt::AlignCenter);
         layout->addWidget(messageLabel);
@@ -642,7 +642,7 @@ void MediaApp::showVideoArea()
     mdiArea = new QMdiArea;
     mdiArea->setViewMode(QMdiArea::SubWindowView);
 
-    QDialog *mdiDialog = new QDialog(this);
+    DraggableDialog *mdiDialog = new DraggableDialog(this);
     mdiDialog->setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
     mdiDialog->resize(1302, 1023);
 
@@ -705,7 +705,7 @@ void MediaApp::showVideoArea()
         QVBoxLayout *layout = new QVBoxLayout(&customDialog);
 
         // 메시지 라벨 추가
-        QLabel *messageLabel = new QLabel("Do you want to close the window?", &customDialog);
+        QLabel *messageLabel = new QLabel("Do you want to close this VIDEO channel?", &customDialog);
         messageLabel->setStyleSheet("font-size: 16px; font-weight: bold; color: white;");
         messageLabel->setAlignment(Qt::AlignCenter);
         layout->addWidget(messageLabel);
@@ -1163,8 +1163,9 @@ void MediaApp::fetchCameraInfo()
 // 받아온 정보 표시
 void MediaApp::displayCameraInfo(const QJsonArray &cameraList)
 {
-    QDialog dialog(this, Qt::FramelessWindowHint | Qt::Dialog);
-    dialog.setStyleSheet("background-color: #19232D; color: #ffffff; border-radius: 10px;");
+    DraggableDialog *dialog = new DraggableDialog(this);
+    dialog->setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
+    dialog->setStyleSheet("background-color: #19232D; color: #ffffff; border-radius: 10px;");
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
 
@@ -1177,7 +1178,7 @@ void MediaApp::displayCameraInfo(const QJsonArray &cameraList)
         QJsonObject camera = value.toObject();
 
         // GroupBox 생성
-        QGroupBox *cameraBox = new QGroupBox("Camera Info", &dialog);
+        QGroupBox *cameraBox = new QGroupBox("Camera Info", dialog);
         cameraBox->setStyleSheet(R"(
             QGroupBox {
                 border: 2px solid #455364;
@@ -1257,7 +1258,7 @@ void MediaApp::displayCameraInfo(const QJsonArray &cameraList)
     }
 
     // Save Button
-    QPushButton *saveButton = new QPushButton("Save", &dialog);
+    QPushButton *saveButton = new QPushButton("Save", dialog);
     saveButton->setStyleSheet(R"(
         QPushButton {
             background-color: #455364;
@@ -1291,11 +1292,11 @@ void MediaApp::displayCameraInfo(const QJsonArray &cameraList)
 
         // 서버로 Patch 요청
         patchCameraInfo(updatedCameras);
-        dialog.accept();
+        dialog->accept();
     });
 
     // Close Button
-    QPushButton *closeButton = new QPushButton("Close", &dialog);
+    QPushButton *closeButton = new QPushButton("Close", dialog);
     closeButton->setStyleSheet(R"(
         QPushButton {
             background-color: #455364;
@@ -1314,10 +1315,10 @@ void MediaApp::displayCameraInfo(const QJsonArray &cameraList)
     )");
     mainLayout->addWidget(closeButton);
 
-    connect(closeButton, &QPushButton::clicked, &dialog, &QDialog::reject);
+    connect(closeButton, &QPushButton::clicked, dialog, &QDialog::reject);
 
-    dialog.setLayout(mainLayout);
-    dialog.exec();
+    dialog->setLayout(mainLayout);
+    dialog->exec();
 }
 
 // 수정한 정보 서버로 PATCH 요청
@@ -1362,48 +1363,49 @@ void MediaApp::patchCameraInfo(const QJsonArray &updatedCameras)
 // 파일 정보 입력
 void MediaApp::uploadCameraProgram()
 {
-    // Input dialog for user to provide FPS, name, and description
-    QDialog dialog(this, Qt::FramelessWindowHint | Qt::Dialog);
-    dialog.setStyleSheet("background-color: #19232D; color: #ffffff; border-radius: 10px;");
+    // 사용자에게 FPS, name, and description 입력 받는 Dialog
+    DraggableDialog *dialog = new DraggableDialog(this);
+    dialog->setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
+    dialog->setStyleSheet("background-color: #19232D; color: #ffffff; border-radius: 10px;");
 
-    QVBoxLayout *layout = new QVBoxLayout(&dialog);
+    QVBoxLayout *layout = new QVBoxLayout(dialog);
 
     // FPS 입력
-    QLabel *fpsLabel = new QLabel("FPS:", &dialog);
+    QLabel *fpsLabel = new QLabel("FPS:", dialog);
     fpsLabel->setStyleSheet("font-size: 14px; color: white;");
-    QLineEdit *fpsInput = new QLineEdit(&dialog);
+    QLineEdit *fpsInput = new QLineEdit(dialog);
     fpsInput->setPlaceholderText("Enter FPS");
 
     // 구분선 추가
-    QFrame *line1 = new QFrame(&dialog);
+    QFrame *line1 = new QFrame(dialog);
     line1->setFrameShape(QFrame::HLine);
     line1->setFrameShadow(QFrame::Sunken);
     line1->setStyleSheet("color: #ffffff;");
 
     // 파일 이름 입력
-    QLabel *nameLabel = new QLabel("File Name:", &dialog);
+    QLabel *nameLabel = new QLabel("File Name:", dialog);
     nameLabel->setStyleSheet("font-size: 14px; color: white;");
-    QLineEdit *nameInput = new QLineEdit(&dialog);
+    QLineEdit *nameInput = new QLineEdit(dialog);
     nameInput->setPlaceholderText("Enter File Name");
 
-    QFrame *line2 = new QFrame(&dialog);
+    QFrame *line2 = new QFrame(dialog);
     line2->setFrameShape(QFrame::HLine);
     line2->setFrameShadow(QFrame::Sunken);
     line2->setStyleSheet("color: #ffffff;");
 
     // 설명 입력
-    QLabel *descLabel = new QLabel("Description:", &dialog);
+    QLabel *descLabel = new QLabel("Description:", dialog);
     descLabel->setStyleSheet("font-size: 14px; color: white;");
-    QLineEdit *descInput = new QLineEdit(&dialog);
+    QLineEdit *descInput = new QLineEdit(dialog);
     descInput->setPlaceholderText("Enter Description");
 
-    QFrame *line3 = new QFrame(&dialog);
+    QFrame *line3 = new QFrame(dialog);
     line3->setFrameShape(QFrame::HLine);
     line3->setFrameShadow(QFrame::Sunken);
     line3->setStyleSheet("color: #ffffff;");
 
     // 확인 버튼
-    QPushButton *okButton = new QPushButton("OK", &dialog);
+    QPushButton *okButton = new QPushButton("OK", dialog);
     okButton->setStyleSheet(R"(
         QPushButton {
             background-color: #455364;
@@ -1420,18 +1422,18 @@ void MediaApp::uploadCameraProgram()
             background-color: #60798B;
         }
     )");
-    connect(okButton, &QPushButton::clicked, &dialog, [&]() {
+    connect(okButton, &QPushButton::clicked, dialog, [&]() {
         if (fpsInput->text().isEmpty() || nameInput->text().isEmpty() || descInput->text().isEmpty()) {
             showCustomMessage("Error", "All fields are required.");
             return;
         }
 
-        dialog.accept();
+        dialog->accept();
         sendProgramToServer(fpsInput->text(), nameInput->text(), descInput->text());
     });
 
     // 취소 버튼
-    QPushButton *cancelButton = new QPushButton("Cancel", &dialog);
+    QPushButton *cancelButton = new QPushButton("Cancel", dialog);
     cancelButton->setStyleSheet(R"(
         QPushButton {
             background-color: #455364;
@@ -1448,7 +1450,7 @@ void MediaApp::uploadCameraProgram()
             background-color: #60798B;
         }
     )");
-    connect(cancelButton, &QPushButton::clicked, &dialog, &QDialog::reject);
+    connect(cancelButton, &QPushButton::clicked, dialog, &QDialog::reject);
 
     // 레이아웃 구성
     layout->addWidget(fpsLabel);
@@ -1469,8 +1471,8 @@ void MediaApp::uploadCameraProgram()
 
     layout->addLayout(buttonLayout);
 
-    dialog.setLayout(layout);
-    dialog.exec();
+    dialog->setLayout(layout);
+    dialog->exec();
 }
 
 // 서버로 POST 요청
@@ -1545,6 +1547,8 @@ void MediaApp::mouseReleaseEvent(QMouseEvent *event)
 /*
  * 창 크기 조절 및 채널 닫기
  */
+
+// 채널 크기 최대화
 void MediaApp::maximizeChannel(int channelNumber)
 {
     const QList<QMdiSubWindow *> subWindows = mdiArea->subWindowList();
@@ -1569,6 +1573,7 @@ void MediaApp::maximizeChannel(int channelNumber)
     targetWindow->showMaximized();
 }
 
+// 사이즈 원상복귀 (640*480)
 void MediaApp::returnSize(int channelNumber)
 {
     const QList<QMdiSubWindow *> subWindows = mdiArea->subWindowList();
@@ -1593,6 +1598,7 @@ void MediaApp::returnSize(int channelNumber)
     targetWindow->resize(640, 480);
 }
 
+// 채널 닫고 Empty Channel 상태로
 void MediaApp::closeChannel(int channelNumber)
 {
     const QList<QMdiSubWindow *> subWindows = mdiArea->subWindowList();
@@ -1630,7 +1636,7 @@ void MediaApp::closeChannel(int channelNumber)
     targetWindow->showNormal();
 }
 
-// 오류 메세지 출력 다이얼로그
+// 오류 메세지 출력 다이얼로그 (QMessageBox 대체)
 void MediaApp::showCustomMessage(const QString &title, const QString &message)
 {
     QDialog customDialog(this, Qt::FramelessWindowHint | Qt::Dialog);
@@ -1673,3 +1679,4 @@ void MediaApp::showCustomMessage(const QString &title, const QString &message)
     customDialog.setLayout(layout);
     customDialog.exec();
 }
+
