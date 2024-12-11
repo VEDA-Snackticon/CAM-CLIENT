@@ -4,8 +4,8 @@ QT Application
 [[ Qt 프레임워크와 GStreamer를 활용해 실시간 스트리밍 및 동영상 모니터링 시스템 ]]
 
 [UI]
-![image](https://github.com/user-attachments/assets/d05da136-351b-4c22-a325-8e8fd92fb21c)
 
+![image](https://github.com/user-attachments/assets/d05da136-351b-4c22-a325-8e8fd92fb21c)
 
    0. 서버와의 데이터 통신을 통해 라이브 카메라 스트리밍(RTSP), 저장된 동영상 재생, 카메라 정보 조회 및 업데이트 기능 제공
    1. 실시간 스트리밍 - 서버로부터 카메라 IP와 포트번호를 받아와(GET 요청) RTSP URL 구성하고 해당 URL로 스트리밍 수행
