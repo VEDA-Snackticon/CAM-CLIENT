@@ -1,7 +1,8 @@
 # CAM-CLIENT
 QT Application
+[[ Qt 프레임워크와 GStreamer를 활용해 실시간 스트리밍 및 동영상 모니터링 시스템 ]]
 
-[[ Qt 프레임워크와 GStreamer를 활용해 실시간 스트리밍 및 동영상 모니터링 시스템 개발 ]]
+![image](https://github.com/user-attachments/assets/d05da136-351b-4c22-a325-8e8fd92fb21c)
 
 0. 서버와의 데이터 통신을 통해 라이브 카메라 스트리밍(RTSP), 저장된 동영상 재생, 카메라 정보 조회 및 업데이트 기능 제공
 
@@ -15,5 +16,3 @@ QT Application
 		정보 중 Group number와 Is Master 는 사용자가 편집하고 서버에 업데이트하는 기능 제공(PATCH)
 
 4. 카메라에 프로그램 업로드 - 사용자로부터 fps, file name, description을 입력받아 서버로 POST 요청 수행 (서버가 .so 파일 카메라로 			전송)
-
-![image](https://github.com/user-attachments/assets/d05da136-351b-4c22-a325-8e8fd92fb21c)
