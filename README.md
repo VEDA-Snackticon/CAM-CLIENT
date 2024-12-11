@@ -15,4 +15,3 @@ QT Application
 		정보 중 Group number와 Is Master 는 사용자가 편집하고 서버에 업데이트하는 기능 제공(PATCH)
 
 4. 카메라에 프로그램 업로드 - 사용자로부터 fps, file name, description을 입력받아 서버로 POST 요청 수행 (서버가 .so 파일 카메라로 			전송)
-![image](https://github.com/user-attachments/assets/42c9b9a9-2285-45f6-a1e6-5d89a693c299)
