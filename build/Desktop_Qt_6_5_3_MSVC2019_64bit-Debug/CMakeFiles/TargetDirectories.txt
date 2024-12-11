@@ -1,0 +1,8 @@
+C:/Users/change05/Desktop/Snack_Guard_rev/build/Desktop_Qt_6_5_3_MSVC2019_64bit-Debug/CMakeFiles/Snack_Guard_rev.dir
+C:/Users/change05/Desktop/Snack_Guard_rev/build/Desktop_Qt_6_5_3_MSVC2019_64bit-Debug/CMakeFiles/edit_cache.dir
+C:/Users/change05/Desktop/Snack_Guard_rev/build/Desktop_Qt_6_5_3_MSVC2019_64bit-Debug/CMakeFiles/rebuild_cache.dir
+C:/Users/change05/Desktop/Snack_Guard_rev/build/Desktop_Qt_6_5_3_MSVC2019_64bit-Debug/CMakeFiles/list_install_components.dir
+C:/Users/change05/Desktop/Snack_Guard_rev/build/Desktop_Qt_6_5_3_MSVC2019_64bit-Debug/CMakeFiles/install.dir
+C:/Users/change05/Desktop/Snack_Guard_rev/build/Desktop_Qt_6_5_3_MSVC2019_64bit-Debug/CMakeFiles/install/local.dir
+C:/Users/change05/Desktop/Snack_Guard_rev/build/Desktop_Qt_6_5_3_MSVC2019_64bit-Debug/CMakeFiles/Snack_Guard_rev_autogen_timestamp_deps.dir
+C:/Users/change05/Desktop/Snack_Guard_rev/build/Desktop_Qt_6_5_3_MSVC2019_64bit-Debug/CMakeFiles/Snack_Guard_rev_autogen.dir
