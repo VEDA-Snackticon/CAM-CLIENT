@@ -13,12 +13,11 @@ Qt 프레임워크와 GStreamer를 활용한 이벤트 기반 감시 시스템
 <Project Structure(구조)>
 	
 	/src
-	├── main.cpp             # 애플리케이션 진입점
-	├── mediaapp.h/.cpp      # 메인 애플리케이션 로직
-	├── player.h/.cpp        # GStreamer를 사용하는 멀티미디어 플레이어
-	├── customwidget.h/.cpp  # UI 향상을 위한 커스텀 위젯
-	├── DraggableDialog.h/.cpp # 프레임리스 드래그 가능한 대화창
-	├── SubWindow.h          # 비디오 채널 관리를 위한 SubWindow
+	├── main.cpp             
+	├── mediaapp.h/.cpp          # 메인 어플리케이션 로직	
+	├── player.h/.cpp            # GStreamer를 사용하는 멀티미디어 플레이어
+	├── DraggableDialog.h/.cpp   # 프레임리스 다이얼로그에 드래그 기능 구현
+	├── SubWindow.h              # 4채널 영상 관리를 위한 SubWindow
 	
 <UI 및 동작>
 1. 서버와의 데이터 통신을 통해 라이브 카메라 스트리밍(RTSP), 저장된 동영상 재생, 카메라 정보 조회 및 업데이트 기능 제공
