@@ -41,14 +41,10 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         mediaapp.cpp
         player.cpp
         image.qrc
-        customwidget.h
-        customwidget.cpp
+
         subwindow.h
-
-
-
-
-
+        DraggableDialog.h
+        DraggableDialog.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET Snack_Guard_rev APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
