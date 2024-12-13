@@ -40,13 +40,19 @@ Qt 프레임워크와 GStreamer를 활용한 이벤트 기반 감시 시스템
       
 - 최대 4채널 영상 재생 지원, 목록에서 재생할 비디오를 선택하고 다운로드 여부 및 경로 선택
 
-4. 카메라 정보 조회 - 서버로부터 카메라 정보(Description, Group number, IP address, Is Master) 조회(GET 요청)
+4. 이벤트 로그 확인
+
+- 카메라에서 이벤트 발생 시 서버에 전송했던 이벤트 로그 기록 확인(YYYY/MM/DD HH:MM:SS 형식)
+
+![image](https://github.com/user-attachments/assets/626eef8d-5300-4ba0-af10-092528a13825)
+
+5. 카메라 정보 조회 - 서버로부터 카메라 정보(Description, Group number, IP address, Is Master) 조회(GET 요청)
       
 - 정보 중 Group number와 Is Master 는 사용자가 편집하고 서버에 업데이트하는 기능 제공(PATCH)
 
 ![image](https://github.com/user-attachments/assets/faeb16d8-7ea7-409c-a80a-9b54d04e75b5)
 
-5. 카메라에 프로그램 업로드 - 사용자로부터 fps, file name, description을 입력받아 서버로 POST 요청 수행
+6. 카메라에 프로그램 업로드 - 사용자로부터 fps, file name, description을 입력받아 서버로 POST 요청 수행
 
 - 서버가 .so 파일 카메라로 전송
 
