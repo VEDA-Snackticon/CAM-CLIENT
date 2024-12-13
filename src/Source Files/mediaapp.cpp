@@ -1,10 +1,11 @@
 #include "mediaapp.h"
-#include <iostream>
 
 MediaApp::MediaApp(QWidget *parent)
     : QWidget(parent), networkManager(new QNetworkAccessManager(this)), outputFile(nullptr), player(new Player(this))
 {
     this->setWindowFlags(Qt::FramelessWindowHint);
+    QFont font("Arial", 14);
+    QApplication::setFont(font);
 
     // 스타일시트 로드 및 적용
     QFile file(":/darkstyle.qss");
@@ -37,8 +38,8 @@ void MediaApp::createCustomTitleBar(QBoxLayout *appLayout)
     titleBarLayout->setContentsMargins(5, 0, 5, 0);
 
     // 제목
-    QLabel *titleLabel = new QLabel("     S N A C K - G U A R D", titleBar);
-    titleLabel->setStyleSheet("color: #19232D; font-size: 20px; font-weight: bold;");
+    QLabel *titleLabel = new QLabel("     P R O X I - S E N S E", titleBar);
+    titleLabel->setStyleSheet("font-family: Arial; color: #19232D; font-size: 20px; font-weight: bold;");
     titleLabel->setAlignment(Qt::AlignCenter);
 
     // 닫기 버튼
@@ -141,8 +142,9 @@ void MediaApp::createUI(QBoxLayout *appLayout)
     streamButton->setFixedSize(150, 50);
     streamButton->setStyleSheet(
         "QPushButton {"
+        "   font-family: Arial;"
         "   background-color: #FAEBD7;"
-        "   color: #000000;"
+        "   color: #19232D;"
         "   border: 2px solid #ea632a;"
         "   border-radius: 10px;"
         "   font-size: 16px;"
@@ -163,8 +165,9 @@ void MediaApp::createUI(QBoxLayout *appLayout)
     videoButton->setFixedSize(150, 50);
     videoButton->setStyleSheet(
         "QPushButton {"
+        "   font-family: Arial;"
         "   background-color: #FAEBD7;"
-        "   color: #000000;"
+        "   color: #19232D;"
         "   border: 2px solid #ea632a;"
         "   border-radius: 10px;"
         "   font-size: 16px;"
@@ -181,12 +184,36 @@ void MediaApp::createUI(QBoxLayout *appLayout)
     connect(videoButton, &QPushButton::clicked, this, &MediaApp::showVideoArea);
     appLayout->addWidget(videoButton, 0, Qt::AlignCenter);
 
+    eventButton = new QPushButton(tr("Event Log"), this);
+    eventButton->setFixedSize(150, 50);
+    eventButton->setStyleSheet(
+        "QPushButton {"
+        "   font-family: Arial;"
+        "   background-color: #FAEBD7;"
+        "   color: #19232D;"
+        "   border: 2px solid #ea632a;"
+        "   border-radius: 10px;"
+        "   font-size: 16px;"
+        "   padding: 10px;"
+        "}"
+        "QPushButton:hover {"
+        "   background-color: #F5DEB3;"
+        "   color: #8B0000;"
+        "}"
+        "QPushButton:pressed {"
+        "   background-color: #ea632a;"
+        "}"
+        );
+    connect(eventButton, &QPushButton::clicked, this, &MediaApp::fetchEventLog);
+    appLayout->addWidget(eventButton, 0, Qt::AlignCenter);
+
     fetchInfoButton = new QPushButton(tr("Camera Info"), this);
     fetchInfoButton->setFixedSize(150, 50);
     fetchInfoButton->setStyleSheet(
         "QPushButton {"
+        "   font-family: Arial;"
         "   background-color: #FAEBD7;"
-        "   color: #000000;"
+        "   color: #19232D;"
         "   border: 2px solid #ea632a;"
         "   border-radius: 10px;"
         "   font-size: 16px;"
@@ -207,8 +234,9 @@ void MediaApp::createUI(QBoxLayout *appLayout)
     uploadButton->setFixedSize(150, 50);
     uploadButton->setStyleSheet(
         "QPushButton {"
+        "   font-family: Arial;"
         "   background-color: #FAEBD7;"
-        "   color: #000000;"
+        "   color: #19232D;"
         "   border: 2px solid #ea632a;"
         "   border-radius: 10px;"
         "   font-size: 16px;"
@@ -304,7 +332,7 @@ void MediaApp::showStreamingArea()
 
         // 메시지 라벨 추가
         QLabel *messageLabel = new QLabel("Do you want to close this STREAMING channel?", &customDialog);
-        messageLabel->setStyleSheet("font-size: 16px; font-weight: bold; color: white;");
+        messageLabel->setStyleSheet("font-family: Arial; font-size: 16px; font-weight: bold; color: white;");
         messageLabel->setAlignment(Qt::AlignCenter);
         layout->addWidget(messageLabel);
 
@@ -313,6 +341,7 @@ void MediaApp::showStreamingArea()
         QPushButton *yesButton = new QPushButton("Yes", &customDialog);
         yesButton->setStyleSheet(R"(
         QPushButton {
+            font-family: Arial;
             background-color: #455364;
             color: #ffffff;
             border: none;
@@ -330,6 +359,7 @@ void MediaApp::showStreamingArea()
         QPushButton *noButton = new QPushButton("No", &customDialog);
         noButton->setStyleSheet(R"(
         QPushButton {
+            font-family: Arial;
             background-color: #455364;
             color: #ffffff;
             border: none;
@@ -402,7 +432,7 @@ void MediaApp::showStreamingArea()
         placeholder->setStyleSheet("background-color: black;");
 
         QLabel *emptyLabel = new QLabel("Empty Channel", placeholder);
-        emptyLabel->setStyleSheet("color: white; font-size: 18px; font-weight: bold;");
+        emptyLabel->setStyleSheet("font-family: Arial; color: white; font-size: 18px; font-weight: bold;");
         emptyLabel->setAlignment(Qt::AlignCenter);
 
         QVBoxLayout *placeholderLayout = new QVBoxLayout(placeholder);
@@ -450,7 +480,8 @@ void MediaApp::addStreamWindow()
 // 서버로부터 카메라 IP 받아오기
 void MediaApp::fetchCameraIPsForChannel(int channelIndex, QMdiSubWindow *targetWindow)
 {
-    QString serverUrl = "https://b9d1644e-063c-44a9-9607-fc86dc9a3842.mock.pstmn.io/get_camera_ips"; // 서버 URL
+    // QString serverUrl = "https://b9d1644e-063c-44a9-9607-fc86dc9a3842.mock.pstmn.io/get_camera_list";
+    QString serverUrl = "http://snackticon.iptime.org/cameraList";
     QUrl url(serverUrl);
 
     if (!url.isValid()) {
@@ -466,13 +497,21 @@ void MediaApp::fetchCameraIPsForChannel(int channelIndex, QMdiSubWindow *targetW
     connect(reply, &QNetworkReply::finished, this, [this, reply, channelIndex, targetWindow]() {
         if (reply->error() == QNetworkReply::NoError) {
             QJsonDocument jsonResponse = QJsonDocument::fromJson(reply->readAll());
-            QJsonObject jsonObject = jsonResponse.object();
+            QJsonArray cameraArray = jsonResponse.object()["cameras"].toArray();
 
             cameraIPs.clear();
-            cameraIPs.append(jsonObject["cam1_ip"].toString());
-            cameraIPs.append(jsonObject["cam2_ip"].toString());
-            cameraIPs.append(jsonObject["cam3_ip"].toString());
-            cameraIPs.append(jsonObject["cam4_ip"].toString());
+            for (const QJsonValue &value : cameraArray) {
+                QJsonObject cameraObject = value.toObject();
+                QString ip = cameraObject["ipAddr"].toString();
+                if (!ip.isEmpty()) {
+                    cameraIPs.append(ip);
+                }
+            }
+
+            if (cameraIPs.isEmpty()) {
+                showCustomMessage("Error", "No camera IPs available.");
+                return;
+            }
 
             // 카메라 선택 다이얼로그를 보여줌
             QDialog dialog(this, Qt::FramelessWindowHint | Qt::Dialog);
@@ -521,6 +560,7 @@ void MediaApp::fetchCameraIPsForChannel(int channelIndex, QMdiSubWindow *targetW
             QPushButton *okButton = new QPushButton("OK", &dialog);
             okButton->setStyleSheet(R"(
                 QPushButton {
+                    font-family: Arial;
                     background-color: #455364;
                     color: #ffffff;
                     border: none;
@@ -557,6 +597,7 @@ void MediaApp::fetchCameraIPsForChannel(int channelIndex, QMdiSubWindow *targetW
             QPushButton *cancelButton = new QPushButton("Cancel", &dialog);
             cancelButton->setStyleSheet(R"(
                 QPushButton {
+                    font-family: Arial;
                     background-color: #455364;
                     color: #ffffff;
                     border: none;
@@ -583,7 +624,7 @@ void MediaApp::fetchCameraIPsForChannel(int channelIndex, QMdiSubWindow *targetW
             dialog.setLayout(layout);
             dialog.exec();
         } else {
-            showCustomMessage("Error", "Failed to fetch camera IPs.\nError: " + reply->errorString());
+            showCustomMessage("Error", "Failed to fetch camera information.\nError: " + reply->errorString());
         }
         reply->deleteLater();
     });
@@ -603,8 +644,9 @@ void MediaApp::startStream(int channelIndex, const QString &cameraIp, QMdiSubWin
     // Player와 VideoWidget 연결
     Player *player = new Player(this);
     player->setVideoOutput(videoWidget);
-    QString channelStr = QString::number(channelIndex + 1);
-    player->setUri("rtsp://" + cameraIp + ":1935/live/cctv00" + channelStr + ".stream");
+    QString portNum = "8550";
+    QString rtspUrl = "rtsp://" + cameraIp + ":" + portNum + "/snackticon";
+    player->setUri(rtspUrl);
     player->play();
 
     // 서브윈도우 레이아웃 설정
@@ -617,6 +659,7 @@ void MediaApp::startStream(int channelIndex, const QString &cameraIp, QMdiSubWin
     targetWindow->resize(640, 480);
     targetWindow->show();
 }
+
 /* ************************************************************************************************************ */
 /* ************************************************************************************************************ */
 
@@ -627,7 +670,7 @@ void MediaApp::startStream(int channelIndex, const QString &cameraIp, QMdiSubWin
  * 2. Maximize Video, Return Size, Close Video 버튼 통해 창 사이즈 조절 및 닫기
  *
  */
-// // 4채널 MDI Area 표시
+// 4채널 MDI Area 표시
 void MediaApp::showVideoArea()
 {
     mdiArea = new QMdiArea;
@@ -674,7 +717,7 @@ void MediaApp::showVideoArea()
     });
 
     // 채널 닫기
-    QPushButton *closeButton = new QPushButton("Close Video", mdiDialog);
+    QPushButton *closeButton = new QPushButton("Close", mdiDialog);
     closeButton->setStyleSheet("font-size: 14px; font-weight: bold; padding: 10px;");
     connect(closeButton, &QPushButton::clicked, this, [this, channelInput]() {
         int channelNumber = channelInput->text().toInt();
@@ -706,6 +749,7 @@ void MediaApp::showVideoArea()
         QPushButton *yesButton = new QPushButton("Yes", &customDialog);
         yesButton->setStyleSheet(R"(
         QPushButton {
+            font-family: Arial;
             background-color: #455364;
             color: #ffffff;
             border: none;
@@ -723,6 +767,7 @@ void MediaApp::showVideoArea()
         QPushButton *noButton = new QPushButton("No", &customDialog);
         noButton->setStyleSheet(R"(
         QPushButton {
+            font-family: Arial;
             background-color: #455364;
             color: #ffffff;
             border: none;
@@ -794,8 +839,8 @@ void MediaApp::showVideoArea()
         QWidget *placeholder = new QWidget(subWindow);
         placeholder->setStyleSheet("background-color: black;");
 
-        QLabel *emptyLabel = new QLabel("Empty Slot", placeholder);
-        emptyLabel->setStyleSheet("color: white; font-size: 18px; font-weight: bold;");
+        QLabel *emptyLabel = new QLabel("Empty Channel", placeholder);
+        emptyLabel->setStyleSheet("font-family: Arial; color: white; font-size: 18px; font-weight: bold;");
         emptyLabel->setAlignment(Qt::AlignCenter);
 
         QVBoxLayout *placeholderLayout = new QVBoxLayout(placeholder);
@@ -824,7 +869,7 @@ void MediaApp::addVideoWindow()
     for (QMdiSubWindow *subWindow : subWindows) {
         // 빈 채널인지 확인 (Empty Channel 텍스트를 확인)
         QLabel *emptyLabel = subWindow->findChild<QLabel *>();
-        if (emptyLabel && emptyLabel->text() == "Empty Slot") {
+        if (emptyLabel && emptyLabel->text() == "Empty Channel") {
             targetWindow = subWindow;
             break;
         }
@@ -842,16 +887,14 @@ void MediaApp::addVideoWindow()
 // 서버에 저장된 동영상 목록 불러오기
 void MediaApp::fetchVideoList(int channelIndex, QMdiSubWindow *targetWindow)
 {
-    QString serverUrl = "https://b9d1644e-063c-44a9-9607-fc86dc9a3842.mock.pstmn.io/get_videos"; // 서버 URL
+    QString serverUrl = "http://snackticon.iptime.org/file";
     QUrl url(serverUrl);
 
-    // URL 유효성 검사
     if (!url.isValid()) {
         showCustomMessage("Error", "Invalid server URL.");
         return;
     }
 
-    // 서버에 요청
     QNetworkRequest request(url);
     QNetworkReply *reply = networkManager->get(request);
 
@@ -859,22 +902,17 @@ void MediaApp::fetchVideoList(int channelIndex, QMdiSubWindow *targetWindow)
         if (reply->error() == QNetworkReply::NoError) {
             // JSON 응답 처리
             QJsonDocument jsonResponse = QJsonDocument::fromJson(reply->readAll());
-            QJsonObject jsonObject = jsonResponse.object();
-            QJsonArray videoArray = jsonObject["videos"].toArray();
+            QJsonArray videoArray = jsonResponse.object()["files"].toArray();
 
-            // 비디오 URL 목록 초기화
             videoUrls.clear();
 
-            // 타이틀 바 없는 다이얼로그 생성
             QDialog dialog(this, Qt::FramelessWindowHint | Qt::Dialog);
             dialog.setStyleSheet("background-color: #19232D; color: #ffffff; border-radius: 10px;");
 
             QVBoxLayout *layout = new QVBoxLayout;
 
-            // 재생할 동영상 선택하는 버튼 생성
             QVector<QRadioButton *> radioButtons;
 
-            // 라디오 버튼 스타일 정의
             QString radioStyle = R"(
                 QRadioButton {
                     spacing: 5px;
@@ -903,22 +941,22 @@ void MediaApp::fetchVideoList(int channelIndex, QMdiSubWindow *targetWindow)
 
             for (const QJsonValue &videoValue : videoArray) {
                 QJsonObject videoObject = videoValue.toObject();
-                QString videoUrl = videoObject["url"].toString();
+                QString fileName = videoObject["fileName"].toString();
+                QString time = videoObject["time"].toString();
 
-                videoUrls.append(videoUrl); // URL 저장
+                if (!fileName.isEmpty()) {
+                    QString fullUrl = QString("http://snackticon.iptime.org/files?filename=%1").arg(fileName);
+                    videoUrls.append(fullUrl);
 
-                // URL에서 파일명 추출
-                QUrl qurl(videoUrl);
-                QString videoFileName = qurl.fileName(); // --- .mp4 추출
-
-                QRadioButton *radioButton = new QRadioButton(videoFileName, &dialog);
-                radioButton->setStyleSheet(radioStyle);
-                layout->addWidget(radioButton);
-                radioButtons.append(radioButton);
+                    QRadioButton *radioButton = new QRadioButton(fileName, &dialog);
+                    radioButton->setStyleSheet(radioStyle);
+                    layout->addWidget(radioButton);
+                    radioButtons.append(radioButton);
+                }
             }
 
-            // 다운로드 여부 체크박스 스타일 정의
-            QString checkboxStyle = R"(
+            QCheckBox *downloadCheckBox = new QCheckBox("Download", &dialog);
+            downloadCheckBox->setStyleSheet(R"(
                 QCheckBox {
                     spacing: 5px;
                     color: #DFE1E2;
@@ -942,17 +980,13 @@ void MediaApp::fetchVideoList(int channelIndex, QMdiSubWindow *targetWindow)
                     background-color: #19232D;
                     border: 2px solid #ffffff;
                 }
-            )";
-
-            // 다운로드 여부 선택 체크박스 추가
-            QCheckBox *downloadCheckBox = new QCheckBox("Download", &dialog);
-            downloadCheckBox->setStyleSheet(checkboxStyle);
+            )");
             layout->addWidget(downloadCheckBox);
 
-            // OK 버튼
             QPushButton *okButton = new QPushButton("OK", &dialog);
             okButton->setStyleSheet(R"(
                 QPushButton {
+                    font-family: Arial;
                     background-color: #455364;
                     color: #ffffff;
                     border: none;
@@ -968,10 +1002,10 @@ void MediaApp::fetchVideoList(int channelIndex, QMdiSubWindow *targetWindow)
                 }
             )");
 
-            // Cancel 버튼
             QPushButton *cancelButton = new QPushButton("Cancel", &dialog);
             cancelButton->setStyleSheet(R"(
                 QPushButton {
+                    font-family: Arial;
                     background-color: #455364;
                     color: #ffffff;
                     border: none;
@@ -987,12 +1021,10 @@ void MediaApp::fetchVideoList(int channelIndex, QMdiSubWindow *targetWindow)
                 }
             )");
 
-            // 버튼 레이아웃
             QHBoxLayout *buttonLayout = new QHBoxLayout;
             buttonLayout->addWidget(okButton);
             buttonLayout->addWidget(cancelButton);
 
-            // OK 버튼 클릭 이벤트
             connect(okButton, &QPushButton::clicked, [&]() {
                 QString selectedUrl;
                 for (int i = 0; i < radioButtons.size(); ++i) {
@@ -1003,29 +1035,23 @@ void MediaApp::fetchVideoList(int channelIndex, QMdiSubWindow *targetWindow)
                 }
 
                 if (downloadCheckBox->isChecked()) {
-                    // 저장할 경로 선택
                     QString savePath = QFileDialog::getSaveFileName(this, "Save Video", "", "MP4 Files (*.mp4);;All Files (*)");
                     if (savePath.isEmpty()) {
                         showCustomMessage("Save Cancelled", "No storage path has been selected");
                         return;
                     }
-
-                    // 동영상 다운로드
                     downloadVideo(selectedUrl, savePath);
                 }
 
                 if (selectedUrl.isEmpty()) {
                     showCustomMessage("Error", "Please select video.");
                     return;
-                } else {
-                    // 동영상 재생
-                    playVideoInMdiWindow(channelIndex, selectedUrl, targetWindow);
                 }
 
+                playVideoInMdiWindow(channelIndex, selectedUrl, targetWindow);
                 dialog.accept();
             });
 
-            // Cancel 버튼 클릭 이벤트
             connect(cancelButton, &QPushButton::clicked, &dialog, &QDialog::reject);
 
             layout->addLayout(buttonLayout);
@@ -1116,6 +1142,250 @@ void MediaApp::downloadVideo(const QString &url, const QString &savePath)
 /* ************************************************************************************************************ */
 
 /*
+ * [ Event Log 버튼 클릭 시 동작 ]
+ *
+ * 1. {서버 URL}/event 에서 지금까지 발생한 이벤트의 time stamp를 받아와 표시
+ *
+ */
+void MediaApp::fetchEventLog()
+{
+    QString serverUrl = "http://snackticon.iptime.org/event";
+    QUrl url(serverUrl);
+
+    if (!url.isValid()) {
+        showCustomMessage("Error", "Invalid server URL.");
+        return;
+    }
+
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    QNetworkReply *reply = networkManager->get(request);
+
+    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
+        if (reply->error() == QNetworkReply::NoError) {
+            QJsonDocument jsonResponse = QJsonDocument::fromJson(reply->readAll());
+            QJsonArray eventList = jsonResponse.object()["events"].toArray();
+
+            // 시간 순으로 정렬
+            sortEventLogByTime(eventList);
+
+            // 카메라 정보를 UI에 표시
+            displayEventLog(eventList);
+
+        } else {
+            showCustomMessage("Error", "Failed to fetch event log.\nError: " + reply->errorString());
+        }
+        reply->deleteLater();
+    });
+}
+
+// event list 시간순 정렬
+void MediaApp::sortEventLogByTime(QJsonArray &eventList)
+{
+    // QVector로 변환 (정렬을 위해)
+    QVector<QJsonObject> events;
+    for (const QJsonValue &value : eventList) {
+        events.append(value.toObject());
+    }
+
+    // 정렬: time 필드를 기준으로
+    std::sort(events.begin(), events.end(), [](const QJsonObject &a, const QJsonObject &b) {
+        QString timeA = a["time"].toString();
+        QString timeB = b["time"].toString();
+
+        // QDateTime으로 변환
+        QDateTime dateTimeA = QDateTime::fromString(timeA, "yyyy-MM-dd HH:mm:ss");
+        QDateTime dateTimeB = QDateTime::fromString(timeB, "yyyy-MM-dd HH:mm:ss");
+
+        return dateTimeA < dateTimeB; // 오름차순 정렬
+    });
+
+    // QVector를 다시 QJsonArray로 변환
+    eventList = QJsonArray();
+    for (const QJsonObject &event : events) {
+        eventList.append(event);
+    }
+}
+
+
+// 받아온 정보 표시
+void MediaApp::displayEventLog(const QJsonArray &eventList)
+{
+    DraggableDialog *dialog = new DraggableDialog(this);
+    dialog->setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog);
+    dialog->setStyleSheet("background-color: #19232D; color: #ffffff; border-radius: 10px;");
+
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+
+    // Event display container
+    QVBoxLayout *eventLayout = new QVBoxLayout;
+    QWidget *eventContainer = new QWidget;
+    eventContainer->setLayout(eventLayout);
+
+    for (const QJsonValue &value : eventList) {
+        QJsonObject event = value.toObject();
+
+        // Event time display
+        QLabel *timeLabel = new QLabel(event["time"].toString());
+        timeLabel->setStyleSheet("font-family: Arial; font-size: 14px; color: #ffffff;");
+        eventLayout->addWidget(timeLabel);
+
+        // Add separator
+        QFrame *separator = new QFrame;
+        separator->setFrameShape(QFrame::HLine);
+        separator->setStyleSheet("color: #ffffff;");
+        eventLayout->addWidget(separator);
+    }
+
+    QScrollArea *scrollArea = new QScrollArea;
+    scrollArea->setWidget(eventContainer);
+    scrollArea->setWidgetResizable(true);
+    mainLayout->addWidget(scrollArea);
+
+    // Filter Button
+    QPushButton *filterButton = new QPushButton("Filter", dialog);
+    filterButton->setStyleSheet(R"(
+        QPushButton {
+            font-family: Arial;
+            background-color: #455364;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+        QPushButton:hover {
+            background-color: #54687A;
+        }
+        QPushButton:pressed {
+            background-color: #60798B;
+        }
+    )");
+
+    connect(filterButton, &QPushButton::clicked, this, [this, &eventList, eventLayout]() {
+        QDialog customDialog(this, Qt::FramelessWindowHint | Qt::Dialog);
+
+        QVBoxLayout *filterLayout = new QVBoxLayout(&customDialog);
+
+        QLabel *label = new QLabel("Enter time range (HH:MM):", &customDialog);
+        filterLayout->addWidget(label);
+
+        QLineEdit *startTimeInput = new QLineEdit(&customDialog);
+        startTimeInput->setPlaceholderText("From");
+        filterLayout->addWidget(startTimeInput);
+
+        QLineEdit *endTimeInput = new QLineEdit(&customDialog);
+        endTimeInput->setPlaceholderText("To");
+        filterLayout->addWidget(endTimeInput);
+
+        QPushButton *applyFilterButton = new QPushButton("Apply", &customDialog);
+        filterLayout->addWidget(applyFilterButton);
+
+        connect(applyFilterButton, &QPushButton::clicked, &customDialog, [this, &eventList, eventLayout, startTimeInput, endTimeInput, &customDialog]() {
+            QString startTime = startTimeInput->text();
+            QString endTime = endTimeInput->text();
+
+            if (startTime.isEmpty() || endTime.isEmpty()) {
+                showCustomMessage("Input Error", "Please enter both start and end times.");
+                return;
+            }
+
+            QTime start = QTime::fromString(startTime, "hh:mm");
+            QTime end = QTime::fromString(endTime, "hh:mm");
+
+            if (!start.isValid() || !end.isValid()) {
+                showCustomMessage("Input Error", "Please enter valid times in the format HH:MM.");
+                return;
+            }
+
+            if (start > end) {
+                showCustomMessage("Input Error", "Start time must be before or equal to end time.");
+                return;
+            }
+
+            // Clear previous event display
+            QLayoutItem *item;
+            while ((item = eventLayout->takeAt(0)) != nullptr) {
+                delete item->widget();
+                delete item;
+            }
+
+            // Display filtered events
+            bool eventFound = false;
+            for (const QJsonValue &value : eventList) {
+                QJsonObject event = value.toObject();
+
+                // Parse event time as QDateTime
+                QDateTime eventDateTime = QDateTime::fromString(event["time"].toString(), "yyyy-MM-dd HH:mm:ss");
+
+                if (eventDateTime.isValid()) {
+                    QTime eventTime = eventDateTime.time();
+
+                    // Check if event time falls within the given range
+                    if (eventTime >= start && eventTime <= end) {
+                        QLabel *timeLabel = new QLabel(event["time"].toString());
+                        timeLabel->setStyleSheet("font-size: 14px; color: #ffffff;");
+                        eventLayout->addWidget(timeLabel);
+
+                        QFrame *separator = new QFrame;
+                        separator->setFrameShape(QFrame::HLine);
+                        separator->setStyleSheet("color: #ffffff;");
+                        eventLayout->addWidget(separator);
+
+                        eventFound = true;
+                    }
+                }
+            }
+
+            if (!eventFound) {
+                QLabel *noEventLabel = new QLabel("No events found for the selected time range.");
+                noEventLabel->setStyleSheet("font-size: 14px; color: #ffffff;");
+                eventLayout->addWidget(noEventLabel);
+            }
+
+
+            customDialog.accept();
+        });
+
+        customDialog.exec();
+    });
+
+    // Close Button
+    QPushButton *closeButton = new QPushButton("Close", dialog);
+    closeButton->setStyleSheet(R"(
+        QPushButton {
+            font-family: Arial;
+            background-color: #455364;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+        QPushButton:hover {
+            background-color: #54687A;
+        }
+        QPushButton:pressed {
+            background-color: #60798B;
+        }
+    )");
+
+    connect(closeButton, &QPushButton::clicked, dialog, &QDialog::reject);
+
+    QHBoxLayout *buttonLayout = new QHBoxLayout;
+    buttonLayout->addWidget(filterButton);
+    buttonLayout->addWidget(closeButton);
+
+    mainLayout->addLayout(buttonLayout);
+
+    dialog->setLayout(mainLayout);
+    dialog->exec();
+}
+/* ************************************************************************************************************ */
+/* ************************************************************************************************************ */
+
+/*
  * [ CameraInfo 버튼 클릭 시 동작 ]
  *
  * 1. 서버로부터 Camera Info 수신
@@ -1126,7 +1396,8 @@ void MediaApp::downloadVideo(const QString &url, const QString &savePath)
 // 서버로부터 카메라 정보 받아오기
 void MediaApp::fetchCameraInfo()
 {
-    QString serverUrl = "https://b9d1644e-063c-44a9-9607-fc86dc9a3842.mock.pstmn.io/get_camera_list";
+    QString serverUrl = "http://snackticon.iptime.org/cameraList";
+    // QString serverUrl = "https://b9d1644e-063c-44a9-9607-fc86dc9a3842.mock.pstmn.io/get_camera_list";
     QUrl url(serverUrl);
 
     if (!url.isValid()) {
@@ -1163,9 +1434,7 @@ void MediaApp::displayCameraInfo(const QJsonArray &cameraList)
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
 
-    QVector<QLineEdit *> descriptionEdits;
     QVector<QLineEdit *> groupNumberEdits;
-    QVector<QLineEdit *> ipAddressEdits;
     QVector<QCheckBox *> isMasterEdits;
 
     for (const QJsonValue &value : cameraList) {
@@ -1175,6 +1444,7 @@ void MediaApp::displayCameraInfo(const QJsonArray &cameraList)
         QGroupBox *cameraBox = new QGroupBox("Camera Info", dialog);
         cameraBox->setStyleSheet(R"(
             QGroupBox {
+                font-family: Arial;
                 border: 2px solid #455364;
                 border-radius: 5px;
                 margin-top: 10px;
@@ -1189,7 +1459,7 @@ void MediaApp::displayCameraInfo(const QJsonArray &cameraList)
 
         // Description
         QLabel *descriptionLabel = new QLabel("Description:", cameraBox);
-        descriptionLabel->setStyleSheet("font-weight: bold; font-size: 14px; color: #ffffff;");
+        descriptionLabel->setStyleSheet("font-family: Arial; font-weight: bold; font-size: 14px; color: #ffffff;");
         boxLayout->addWidget(descriptionLabel);
 
         QLabel *descriptionEdit = new QLabel(camera["description"].toString(), cameraBox);
@@ -1197,7 +1467,7 @@ void MediaApp::displayCameraInfo(const QJsonArray &cameraList)
 
         // Group Number
         QLabel *groupNumberLabel = new QLabel("Group Number:", cameraBox);
-        groupNumberLabel->setStyleSheet("font-weight: bold; font-size: 14px; color: #ffffff;");
+        groupNumberLabel->setStyleSheet("font-family: Arial; font-weight: bold; font-size: 14px; color: #ffffff;");
         boxLayout->addWidget(groupNumberLabel);
 
         QLineEdit *groupNumberEdit = new QLineEdit(QString::number(camera["groupNumber"].toInt()), cameraBox);
@@ -1206,7 +1476,7 @@ void MediaApp::displayCameraInfo(const QJsonArray &cameraList)
 
         // IP Address
         QLabel *ipAddrLabel = new QLabel("IP Address:", cameraBox);
-        ipAddrLabel->setStyleSheet("font-weight: bold; font-size: 14px; color: #ffffff;");
+        ipAddrLabel->setStyleSheet("font-family: Arial; font-weight: bold; font-size: 14px; color: #ffffff;");
         boxLayout->addWidget(ipAddrLabel);
 
         QLabel *ipAddrEdit = new QLabel(camera["ipAddr"].toString(), cameraBox);
@@ -1214,11 +1484,19 @@ void MediaApp::displayCameraInfo(const QJsonArray &cameraList)
 
         // Is Master
         QLabel *isMasterLabel = new QLabel("Is Master:", cameraBox);
-        isMasterLabel->setStyleSheet("font-weight: bold; font-size: 14px; color: #ffffff;");
+        isMasterLabel->setStyleSheet("font-family: Arial; font-weight: bold; font-size: 14px; color: #ffffff;");
         boxLayout->addWidget(isMasterLabel);
 
         QCheckBox *isMasterEdit = new QCheckBox(cameraBox);
-        isMasterEdit->setChecked(camera["isMaster"].toBool());
+        bool isMaster;
+        if (camera["isMaster"].toInt() == 1) {
+            isMaster = true;
+        }
+        else
+            isMaster = false;
+        qInfo() << "Is Master for camera: " << camera["description"].toString() << " = " << isMaster;
+
+        isMasterEdit->setChecked(isMaster);
         isMasterEdit->setStyleSheet(R"(
             QCheckBox {
                 spacing: 5px;
@@ -1255,6 +1533,7 @@ void MediaApp::displayCameraInfo(const QJsonArray &cameraList)
     QPushButton *saveButton = new QPushButton("Save", dialog);
     saveButton->setStyleSheet(R"(
         QPushButton {
+            font-family: Arial;
             background-color: #455364;
             color: #ffffff;
             border: none;
@@ -1269,23 +1548,58 @@ void MediaApp::displayCameraInfo(const QJsonArray &cameraList)
             background-color: #60798B;
         }
     )");
-    mainLayout->addWidget(saveButton);
 
-    connect(saveButton, &QPushButton::clicked, [&]() {
+    connect(saveButton, &QPushButton::clicked, [&, cameraList]() {
         QJsonArray updatedCameras;
 
-        for (int i = 0; i < descriptionEdits.size(); ++i) {
+        for (int i = 0; i < groupNumberEdits.size(); ++i) {
+            QJsonObject originalCamera = cameraList[i].toObject();
             QJsonObject updatedCamera;
-            updatedCamera["description"] = descriptionEdits[i]->text();
-            updatedCamera["groupNumber"] = groupNumberEdits[i]->text().toInt();
-            updatedCamera["ipAddr"] = ipAddressEdits[i]->text();
-            updatedCamera["isMaster"] = isMasterEdits[i]->isChecked();
 
-            updatedCameras.append(updatedCamera);
+            bool isModified = false;
+
+            // Group Number 비교
+            int originalGroupNumber = originalCamera["groupNumber"].toInt();
+            int newGroupNumber = groupNumberEdits[i]->text().toInt();
+            if (originalGroupNumber != newGroupNumber) {
+                updatedCamera["groupNumber"] = newGroupNumber;
+                isModified = true;
+            }
+
+            // Is Master 비교
+            int originalIsMaster = originalCamera["isMaster"].toInt();
+            bool originalIsMaster_bool;
+            if (originalIsMaster == 1)
+                originalIsMaster_bool = true;
+            else
+                originalIsMaster_bool = false;
+            bool newIsMaster = isMasterEdits[i]->isChecked();
+            if (originalIsMaster_bool != newIsMaster) {
+                if (newIsMaster == true)
+                    updatedCamera["isMaster"] = 1;
+                else
+                    updatedCamera["isMaster"] = 0;
+
+                isModified = true;
+            }
+
+            // Description 및 IP Address는 원본 데이터를 유지
+            updatedCamera["description"] = originalCamera["description"].toString();
+            updatedCamera["ipAddr"] = originalCamera["ipAddr"].toString();
+
+            // 변경된 항목만 추가
+            if (isModified) {
+                updatedCameras.append(updatedCamera);
+            }
         }
 
-        // 서버로 Patch 요청
-        patchCameraInfo(updatedCameras);
+        // 변경된 항목이 있는 경우에만 Patch 요청
+        if (!updatedCameras.isEmpty()) {
+            patchCameraInfo(updatedCameras);
+        } else {
+            showCustomMessage("Info", "No changes were made.");
+        }
+
         dialog->accept();
     });
 
@@ -1293,6 +1607,7 @@ void MediaApp::displayCameraInfo(const QJsonArray &cameraList)
     QPushButton *closeButton = new QPushButton("Close", dialog);
     closeButton->setStyleSheet(R"(
         QPushButton {
+            font-family: Arial;
             background-color: #455364;
             color: #ffffff;
             border: none;
@@ -1307,9 +1622,14 @@ void MediaApp::displayCameraInfo(const QJsonArray &cameraList)
             background-color: #60798B;
         }
     )");
-    mainLayout->addWidget(closeButton);
 
     connect(closeButton, &QPushButton::clicked, dialog, &QDialog::reject);
+
+    QHBoxLayout *buttonLayout = new QHBoxLayout;
+    buttonLayout->addWidget(saveButton);
+    buttonLayout->addWidget(closeButton);
+
+    mainLayout->addLayout(buttonLayout);
 
     dialog->setLayout(mainLayout);
     dialog->exec();
@@ -1318,30 +1638,44 @@ void MediaApp::displayCameraInfo(const QJsonArray &cameraList)
 // 수정한 정보 서버로 PATCH 요청
 void MediaApp::patchCameraInfo(const QJsonArray &updatedCameras)
 {
-    QString serverUrl = "https://b9d1644e-063c-44a9-9607-fc86dc9a3842.mock.pstmn.io/get_camera_list";
-    QUrl url(serverUrl);
+    QString baseUrl = "http://snackticon.iptime.org/cameraInfo";
+    for (const QJsonValue &value : updatedCameras) {
+        QJsonObject cameraData = value.toObject();
 
-    if (!url.isValid()) {
-        showCustomMessage("Error", "Invalid server URL.");
-        return;
-    }
-
-    QJsonObject requestBody;
-    requestBody["cameras"] = updatedCameras;
-
-    QNetworkRequest request(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-
-    QNetworkReply *reply = networkManager->sendCustomRequest(request, "PATCH", QJsonDocument(requestBody).toJson());
-
-    connect(reply, &QNetworkReply::finished, this, [this, reply]() {
-        if (reply->error() == QNetworkReply::NoError) {
-            showCustomMessage("Success", "Camera information updated successfully.");
-        } else {
-            showCustomMessage("Error", "Failed to update camera information.\nError: " + reply->errorString());
+        // Ensure the required fields are present
+        if (!cameraData.contains("description") || !cameraData.contains("ipAddr")) {
+            showCustomMessage("Error", "Invalid camera data.");
+            continue;
         }
-        reply->deleteLater();
-    });
+
+        QString ipAddr = cameraData["ipAddr"].toString();
+        QUrl url(baseUrl);
+
+        if (!url.isValid()) {
+            showCustomMessage("Error", "Invalid URL for camera: " + ipAddr);
+            continue;
+        }
+
+        // Prepare request body
+        QJsonObject requestBody;
+        requestBody["description"] = cameraData["description"];
+        requestBody["groupNumber"] = cameraData["groupNumber"];
+        requestBody["isMaster"] = cameraData["isMaster"];
+
+        QNetworkRequest request(url);
+        request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+        QNetworkReply *reply = networkManager->sendCustomRequest(request, "PATCH", QJsonDocument(requestBody).toJson());
+
+        connect(reply, &QNetworkReply::finished, this, [this, reply, ipAddr]() {
+            if (reply->error() == QNetworkReply::NoError) {
+                showCustomMessage("Success", "Camera information for " + ipAddr + " updated successfully.");
+            } else {
+                showCustomMessage("Error", "Failed to update camera information for " + ipAddr + ".\nError: " + reply->errorString());
+            }
+            reply->deleteLater();
+        });
+    }
 }
 /* ************************************************************************************************************ */
 /* ************************************************************************************************************ */
@@ -1366,26 +1700,55 @@ void MediaApp::uploadCameraProgram()
 
     // FPS 입력
     QLabel *fpsLabel = new QLabel("FPS:", dialog);
-    fpsLabel->setStyleSheet("font-size: 14px; font-weight: bold; color: white;");
+    fpsLabel->setStyleSheet("font-family: Arial; font-size: 14px; font-weight: bold; color: white;");
     QLineEdit *fpsInput = new QLineEdit(dialog);
     fpsInput->setPlaceholderText("Enter FPS");
 
     // 파일 이름 입력
     QLabel *nameLabel = new QLabel("File Name:", dialog);
-    nameLabel->setStyleSheet("font-size: 14px; font-weight: bold; color: white;");
+    nameLabel->setStyleSheet("font-family: Arial; font-size: 14px; font-weight: bold; color: white;");
     QLineEdit *nameInput = new QLineEdit(dialog);
     nameInput->setPlaceholderText("Enter File Name");
 
     // 설명 입력
     QLabel *descLabel = new QLabel("Description:", dialog);
-    descLabel->setStyleSheet("font-size: 14px; font-weight: bold; color: white;");
+    descLabel->setStyleSheet("font-family: Arial; font-size: 14px; font-weight: bold; color: white;");
     QLineEdit *descInput = new QLineEdit(dialog);
     descInput->setPlaceholderText("Enter Description");
+
+    // 파일 선택
+    QLabel *fileLabel = new QLabel("Select File:", dialog);
+    fileLabel->setStyleSheet("font-size: 14px; color: white;");
+    QPushButton *fileButton = new QPushButton("Choose File", dialog);
+    fileButton->setStyleSheet(R"(
+        QPushButton {
+            background-color: #455364;
+            color: #ffffff;
+            border: 1px solid #60798B;
+            border-radius: 5px;
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        QPushButton:hover {
+            background-color: #54687A;
+        }
+        QPushButton:pressed {
+            background-color: #60798B;
+        }
+    )");
+    QLabel *filePathLabel = new QLabel(dialog);
+
+    QString filePath;
+    connect(fileButton, &QPushButton::clicked, [&]() {
+        filePath = QFileDialog::getOpenFileName(this, "Select File", "", "All Files (*)");
+        filePathLabel->setText(filePath.isEmpty() ? "No file selected" : filePath);
+    });
 
     // 확인 버튼
     QPushButton *okButton = new QPushButton("OK", dialog);
     okButton->setStyleSheet(R"(
         QPushButton {
+            font-family: Arial;
             background-color: #455364;
             color: #ffffff;
             border: none;
@@ -1411,9 +1774,10 @@ void MediaApp::uploadCameraProgram()
     });
 
     // 취소 버튼
-    QPushButton *cancelButton = new QPushButton("Cancel", dialog);
-    cancelButton->setStyleSheet(R"(
+    QPushButton *closeButton = new QPushButton("Close", dialog);
+    closeButton->setStyleSheet(R"(
         QPushButton {
+            font-family: Arial;
             background-color: #455364;
             color: #ffffff;
             border: none;
@@ -1428,7 +1792,7 @@ void MediaApp::uploadCameraProgram()
             background-color: #60798B;
         }
     )");
-    connect(cancelButton, &QPushButton::clicked, dialog, &QDialog::reject);
+    connect(closeButton, &QPushButton::clicked, dialog, &QDialog::reject);
 
     // 레이아웃 구성
     layout->addWidget(fpsLabel);
@@ -1440,9 +1804,13 @@ void MediaApp::uploadCameraProgram()
     layout->addWidget(descLabel);
     layout->addWidget(descInput);
 
+    layout->addWidget(fileLabel);
+    layout->addWidget(fileButton);
+    layout->addWidget(filePathLabel);
+
     QHBoxLayout *buttonLayout = new QHBoxLayout;
     buttonLayout->addWidget(okButton);
-    buttonLayout->addWidget(cancelButton);
+    buttonLayout->addWidget(closeButton);
 
     layout->addLayout(buttonLayout);
 
@@ -1453,7 +1821,8 @@ void MediaApp::uploadCameraProgram()
 // 서버로 POST 요청
 void MediaApp::sendProgramToServer(const QString &fps, const QString &name, const QString &description)
 {
-    QString serverUrl = "https://b9d1644e-063c-44a9-9607-fc86dc9a3842.mock.pstmn.io/post_program";
+    QString serverUrl = "http://snackticon.iptime.org/program";
+    // QString serverUrl = "https://b9d1644e-063c-44a9-9607-fc86dc9a3842.mock.pstmn.io/post_program";
     QUrl url(serverUrl);
 
     if (!url.isValid()) {
@@ -1654,3 +2023,4 @@ void MediaApp::showCustomMessage(const QString &title, const QString &message)
     customDialog.setLayout(layout);
     customDialog.exec();
 }
+
