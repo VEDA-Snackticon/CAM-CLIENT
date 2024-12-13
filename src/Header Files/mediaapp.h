@@ -2,6 +2,7 @@
 #define MEDIAAPP_H
 
 #include <QWidget>
+#include <iostream>
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QLineEdit>
@@ -38,8 +39,9 @@
 #include <QGraphicsDropShadowEffect>
 #include <QGraphicsBlurEffect>
 #include <QStyleFactory>
+#include <QDateEdit>
+#include <QScrollArea>
 #include "player.h"
-#include "customwidget.h"
 #include "subwindow.h"
 #include "DraggableDialog.h"
 
@@ -63,6 +65,10 @@ private slots:
     void fetchVideoList(int channelIndex, QMdiSubWindow *targetWindow);
     void playVideoInMdiWindow(int channelIndex, const QString &videoUrl, QMdiSubWindow *targetWindow);
     void downloadVideo(const QString &url, const QString &savePath);
+
+    void fetchEventLog();
+    void sortEventLogByTime(QJsonArray &eventList);
+    void displayEventLog(const QJsonArray &eventList);
 
     // Camera Info
     void fetchCameraInfo();
@@ -97,6 +103,7 @@ private:
     QLabel *titleLabel;
     QPushButton *streamButton;
     QPushButton *videoButton;
+    QPushButton *eventButton;
     QPushButton *serverButton;
     QPushButton *sendRequestButton;
     QPushButton *fetchInfoButton;
@@ -117,7 +124,6 @@ private:
     // Stream or Play
     QVector<Player *> players;                                          // 각 채널의 Player
     QVector<QWidget *> videoWidgets;                                    // 각 채널의 비디오 위젯
-    QVector<CustomWidget *> widgets;                                    // 각 Player와 연결된 ClickableWidget
     QDialog *gridDialog;                                                // 격자 창
     QMdiArea *mdiArea;
     Player *player;                                                     // Player 객체를 멤버로 선언
