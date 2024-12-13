@@ -44,7 +44,7 @@ Qt 프레임워크와 GStreamer를 활용한 이벤트 기반 감시 시스템
       
 - 정보 중 Group number와 Is Master 는 사용자가 편집하고 서버에 업데이트하는 기능 제공(PATCH)
 
-  ![image](https://github.com/user-attachments/assets/69678036-e9ae-4157-8d4f-7bb2d80adc96)
+![image](https://github.com/user-attachments/assets/faeb16d8-7ea7-409c-a80a-9b54d04e75b5)
 
 5. 카메라에 프로그램 업로드 - 사용자로부터 fps, file name, description을 입력받아 서버로 POST 요청 수행
 
