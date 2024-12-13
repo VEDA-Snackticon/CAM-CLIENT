@@ -22,7 +22,7 @@ Qt 프레임워크와 GStreamer를 활용한 이벤트 기반 감시 시스템
 <UI 및 동작>
 1. 서버와의 데이터 통신을 통해 라이브 카메라 스트리밍(RTSP), 저장된 동영상 재생, 카메라 정보 조회 및 업데이트 기능 제공
 
-![image](https://github.com/user-attachments/assets/d05da136-351b-4c22-a325-8e8fd92fb21c)
+![image](https://github.com/user-attachments/assets/824b2edb-de20-49af-b16d-80a83ece7a6c)
       
 2. 실시간 스트리밍 - 서버로부터 카메라 IP와 포트번호를 받아와(GET 요청) RTSP URL 구성하고 해당 URL로 스트리밍 수행
       
