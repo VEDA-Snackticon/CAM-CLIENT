@@ -50,4 +50,4 @@ Qt 프레임워크와 GStreamer를 활용한 이벤트 기반 감시 시스템
 
 - 서버가 .so 파일 카메라로 전송
 
-  ![image](https://github.com/user-attachments/assets/88e5f03e-a4de-46b3-a946-6986f5265eb8)
+![image](https://github.com/user-attachments/assets/953bba85-63e4-46ce-888a-007c20b8ffe2)
